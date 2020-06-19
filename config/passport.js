@@ -1,4 +1,5 @@
 const JwtStrategy = require('passport-jwt').Strategy;
+const googleStrategy = require('passport-google-token').Strategy
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const mongoose = require('mongoose');
 const User = require('../models/User');
@@ -9,6 +10,7 @@ const options = {
   secretOrKey: process.env.SECRET_OR_KEY
 }
 module.exports = passport =>{
+  //jwt strategy
   passport.use(
     new JwtStrategy(options, async (payload, done)=>{
       try {
@@ -18,9 +20,34 @@ module.exports = passport =>{
       } catch (error) {
         done(error, false)
       }
-      
     })
   )
+  // google strategy
+  passport.use('google', new googleStrategy({
+    clientID: process.env.GOOGLE_CLIENT_ID,
+    clientSecret: process.env.GOOGLE_SECRET
+  }, async(accessToken, refreshToken, profile, done)=>{
+    /* console.log(profile._json) */
+    let{id, email, name} = profile._json
+    try {
+     let user = await User.findOne({googleID: id})
+     if(user){
+       return done(null, user)
+     }
+     let userEmail = await User.findOne({email})
+     if(userEmail) return done(null, userEmail)
+     let newUser = new User({
+       method: 'google',
+       googleID: id,
+       email,
+       username: name
+     }) 
+     await newUser.save()
+     done(null,newUser)
+   } catch (error) {
+     done(error, false)
+   }
+  }))
 }
 
 

@@ -3,11 +3,16 @@ const schema = mongoose.Schema
 
 const userSchema = new schema({
   method:{
-    type: String
+    type: String,
+    enum:['local', 'google', 'facebook']
   },
-  name: String,
+  local:{
+    password:String,
+  },
+  googleID: String,
+  facebookID: String,
+  username: String,
   email: String,
-  password:String,
   date:{
     type: Date,
     default: Date.now

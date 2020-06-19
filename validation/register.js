@@ -3,7 +3,7 @@ const isEmpty = require("./isEmpty");
 
 module.exports = function validateRegisterInput(data) {
   let errors = {};
-  data.name = !isEmpty(data.name) ? data.name : '';
+  data.name = !isEmpty(data.username) ? data.username : '';
   data.email = !isEmpty(data.email) ? data.email : '';
   data.email2 = !isEmpty(data.email2) ? data.email2 : '';
   data.password = !isEmpty(data.password) ? data.password : '';
@@ -14,8 +14,8 @@ module.exports = function validateRegisterInput(data) {
       "name too short or too long it must be between 4and 10 charecters";
   }
 
-  if(validator.isEmpty(data.name)){
-    errors.name = 'name is requird '
+  if(validator.isEmpty(data.username)){
+    errors.username = 'name is requird '
   }
   if(validator.isEmpty(data.email)){
     errors.email = 'email is requird '

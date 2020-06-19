@@ -6,12 +6,13 @@ const passport = require('passport')
 require('dotenv').config()
 const User = require('../models/User')
 const validateRegisterInput =require('../validation/register')
-const { isAuthenticated, authenticate } = require('../middleware/auth')
+const { isAuthenticated, authenticate, jwtSign } = require('../middleware/auth')
 
 // user sign up a user
 router.post('/signup', async (req,res)=>{
-  const {usernam, email, email2, password, password2} = req.body
+  const {username, email, email2, password, password2} = req.body
   const {errors, isValid} = validateRegisterInput(req.body)
+  /* console.log(req.body) */ 
   if(!isValid){
     return res.status(400).json(errors)
   }
@@ -22,26 +23,24 @@ router.post('/signup', async (req,res)=>{
       return res.status(400).json({errors})
     }
     let newUser = new User({
-      name: usernam,
+      method: 'local',
+      username,
       email,
-      password
+      local:{
+        password
+      }
     })
     bcrypt.genSalt(5, async (err, salt)=>{
       try {
         if (err) throw err
-        await bcrypt.hash(newUser.password, salt, async (err, hash)=>{
+        await bcrypt.hash(newUser.local.password, salt, async (err, hash)=>{
           if(err) throw err
-          newUser.password = hash
+          newUser.local.password = hash
           await newUser.save()
           /* res.json(newUser) */
           
           let user = await User.findOne({email})
-          let token = jwt.sign({
-            iss:'Yupher Inc', //or your name company name ....
-            sub: user.id, // what you want to send in the payload to keep things simple I sent user id 
-          }, process.env.SECRET_OR_KEY /* replace this with your secret key*/
-          ,{expiresIn:604800 /* expires in 7 days (in seconds!!!!) or whatever you like*/ }
-          )
+          let token = jwtSign(user.id)
           res.json({
             success: true,
             user: user.id,
@@ -61,7 +60,7 @@ router.post('/signup', async (req,res)=>{
 //get all users  private route  you need to be authenticated
 router.get('/all', authenticate, async(req,res)=>{
   try {
-    let users = await User.find({})
+    let users = await User.find({}).select('-local')
     if(!users) return res.status(404).json({error: 'users not found'})
     res.json(users)
   } catch (error) {

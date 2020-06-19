@@ -1,7 +1,7 @@
 {
   "name": "apioauth",
   "version": "1.0.0",
-  "description": "",
+  "description": "authentication template using three different passport strategies  passport-jwt passprt-google-token and passport-facebook-token",
   "main": "server.js",
   "scripts": {
     "server": "nodemon server.js"
@@ -16,6 +16,7 @@
     "jsonwebtoken": "^8.5.1",
     "mongoose": "^5.9.19",
     "passport": "^0.4.1",
+    "passport-google-token": "^0.1.2",
     "passport-jwt": "^4.0.0",
     "validator": "^13.1.1"
   },
