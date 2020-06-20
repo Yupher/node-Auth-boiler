@@ -6,7 +6,7 @@ require('dotenv').config();
 const User = require('../models/User');
 const validateLoginInput = require('../validation/login');
 const passport = require('passport');
-const { jwtSign, googleAuth } = require('../middleware/auth');
+const { jwtSign, googleAuth, facebookAuth } = require('../middleware/auth');
 
 //user login via local strategy
 router.post('/signin', async (req, res) => {
@@ -35,11 +35,12 @@ router.post('/signin', async (req, res) => {
 //user login via google OAuth
 router.post('/google', googleAuth, async(req,res)=>{
   let token = jwtSign(req.user.id)
-  res.json({token: `Bearer ${token}`})
+  res.json({user: req.user.id, token: `Bearer ${token}`})
 })
 //usere login via facebook OAuth
-router.post('/facebook', async(req,res)=>{
-  console.log('this is facebook auth route')
+router.post('/facebook',facebookAuth, (req,res)=>{
+  let token = jwtSign(req.user.id)
+  res.json({user: req.user.id, token: `Bearer ${token}`})
 })
 
 module.exports = router;

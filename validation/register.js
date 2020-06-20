@@ -9,9 +9,9 @@ module.exports = function validateRegisterInput(data) {
   data.password = !isEmpty(data.password) ? data.password : '';
   data.password2 = !isEmpty(data.password2) ? data.password2 : '';
 
-  if (!validator.isLength(data.name, { min: 4, max: 10 })) {
+  if (!validator.isLength(data.username, { min: 4, max: 25 })) {
     errors.name =
-      "name too short or too long it must be between 4and 10 charecters";
+      "name too short or too long it must be between 4 and 25 charecters";
   }
 
   if(validator.isEmpty(data.username)){

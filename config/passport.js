@@ -1,5 +1,6 @@
 const JwtStrategy = require('passport-jwt').Strategy;
 const googleStrategy = require('passport-google-token').Strategy
+const facebookStrategy = require('passport-facebook-token')
 const ExtractJwt = require('passport-jwt').ExtractJwt;
 const mongoose = require('mongoose');
 const User = require('../models/User');
@@ -47,6 +48,34 @@ module.exports = passport =>{
    } catch (error) {
      done(error, false)
    }
+  }))
+
+  //facebook strategy
+  passport.use('facebook', new facebookStrategy({
+    clientID: process.env.FACEBOOK_ID,
+    clientSecret: process.env.FACEBOOK_SECRET,
+  },async(accessToken, refreshToken, profile, done)=>{
+    let{id, email, name} = profile._json
+    try {
+      let user = await User.findOne({facebookID: id})
+      if(user){
+        return done(null,user)
+      }
+      let userEmail = await User.findOne({email})
+      if(userEmail){
+        return done(null, userEmail)
+      }
+      let newUser = new User({
+        method: 'facebook',
+        facebookID: id,
+        username: name,
+        email
+      })
+      await newUser.save()
+      done(null, newUser)
+    } catch (error) {
+      done(error, false)
+    }
   }))
 }
 
