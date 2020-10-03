@@ -14,5 +14,5 @@ I'm using three different authentication  methods (local, google Oauth, facebook
 **quick add : for facebbok for developper app activation you need a valid hosted privacy policy url I know it's kinda pain but you can do  it with free hosting services like netlify**       
 
 
-**my freelance services : https://www.fiverr.com/yupher**
+
   
