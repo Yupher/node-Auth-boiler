@@ -14,7 +14,7 @@
     "dotenv": "^8.2.0",
     "express": "^4.17.3",
     "jsonwebtoken": "^9.0.0",
-    "mongoose": "^5.9.19",
+    "mongoose": "^5.13.15",
     "passport": "^0.4.1",
     "passport-facebook-token": "^4.0.0",
     "passport-google-token": "^0.1.2",
